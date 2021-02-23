@@ -3,6 +3,10 @@ http://cs229.stanford.edu/proj2020spr/report/Fuster_Zou.pdf
 --Level and Spread Direction
 --Alex Fuster (akfuster@stanford.edu), Zhichao Zou (zzou@stanford.edu)
 
+http://cs229.stanford.edu/proj2019aut/data/manual/poundReport.pdf
+Alp Kutlualp∗
+
+
 
 毛线头-还没看的：
 G. Vidyamurthy. Pairs Trading: Quantitative Methods and Analysis. Wiley, 2004.
