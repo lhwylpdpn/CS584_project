@@ -6,3 +6,4 @@ http://cs229.stanford.edu/proj2020spr/report/Fuster_Zou.pdf
 
 毛线头-还没看的：
 G. Vidyamurthy. Pairs Trading: Quantitative Methods and Analysis. Wiley, 2004.
+J. V. D. H. Robert J. Elloitt and W. P. Malcolm. Pairs tradings. Quantitative Finance, 5:271–276, 2005.
