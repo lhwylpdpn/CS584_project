@@ -12,7 +12,7 @@ Alp Kutlualp∗
 
 http://cs229.stanford.edu/proj2019aut/data/assignment_308832_raw/26647694.pdf
 Dickson Chan Michael Hsieh Sophie Pa
-
+↑ 没看懂。。。很多东西
 
 毛线头-还没看的：
 G. Vidyamurthy. Pairs Trading: Quantitative Methods and Analysis. Wiley, 2004.
