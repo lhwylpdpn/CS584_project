@@ -6,8 +6,10 @@ import time
 import datetime
 import sys
 import csv
+import json
 import tushare as ts
 import pandas as pd
+import requests
 ts.set_token('6b57e4c863aa1e2d55c8ce62742130dd38332aafe1c43f2666dedfe5')
 #显示所有列
 pd.set_option('display.max_columns', None)
@@ -32,9 +34,19 @@ class get_data_from_tushare():
             df.to_csv('data_csv\\' + ts_code + '.csv')
             time.sleep(1) # 对方接口要求控制频次，每分钟不能超过500次，文件有大有小，是有概率超的，所以统一sleep下
             del (ts_code)
-
+    def write_detail_data_minutes(self):
+        for i in range(0,self.data.shape[0]):
+            ts_code = self.data.iloc[i]['ts_code']
 if __name__ == '__main__':
 
-    obj_=get_data_from_tushare()
-    obj_.get_stock_list()
-    obj_.write_detail_data()
+    # obj_=get_data_from_tushare()
+    # obj_.get_stock_list()
+    # obj_.write_detail_data()
+
+    #sina的接口
+    request_url='http://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=SZ000568&scale=5&ma=no&datalen=100'
+    response = requests.get(request_url)
+    res=response.content.decode()
+    res=json.loads(response.content)
+    df = pd.DataFrame(res)
+    print(df)
