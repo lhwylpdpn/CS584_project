@@ -34,19 +34,22 @@ class get_data_from_tushare():
             df.to_csv('data_csv\\' + ts_code + '.csv')
             time.sleep(1) # 对方接口要求控制频次，每分钟不能超过500次，文件有大有小，是有概率超的，所以统一sleep下
             del (ts_code)
-    def write_detail_data_minutes(self):
+    def write_detail_data_minutes(self,pagesize):
         for i in range(0,self.data.shape[0]):
             ts_code = self.data.iloc[i]['ts_code']
+            ts_code=ts_code.split('.')[1]+ts_code.split('.')[0]
+            request_url='http://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol='+ts_code+'&scale=5&ma=no&datalen='+str(pagesize)
+            response = requests.get(request_url)
+            res = json.loads(response.content)
+            time.sleep(10)
+            df = pd.DataFrame(res)
+            df.to_csv('data_csv\\minutes\\' + ts_code + 'minute.csv')
+            del(df)
+
 if __name__ == '__main__':
 
-    # obj_=get_data_from_tushare()
-    # obj_.get_stock_list()
-    # obj_.write_detail_data()
-
-    #sina的接口
-    request_url='http://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=SZ000568&scale=5&ma=no&datalen=100'
-    response = requests.get(request_url)
-    res=response.content.decode()
-    res=json.loads(response.content)
-    df = pd.DataFrame(res)
-    print(df)
+    obj_=get_data_from_tushare()
+    obj_.get_stock_list()
+    obj_.write_detail_data_minutes(1000000)#写入sina的分钟级数据
+    #obj_.write_detail_data()#写入tushare的日数据
+    #https://data.gtimg.cn/flashdata/hushen/minutes/21/sh601688.js 腾讯的日线级接口
