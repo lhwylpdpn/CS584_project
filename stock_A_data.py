@@ -25,9 +25,11 @@ class get_data_from_tushare():
         self.pro = ts.pro_api()
         self.data=''
     def get_stock_list(self):
+        #获取标的物的列表
         self.data = self.pro.stock_basic(exchange='', list_status='L', fields='ts_code,symbol,name,area,industry,list_date')
         self.data.to_csv('data_csv\stocklist.csv')
     def write_detail_data(self):
+        #从tushare按照标的物列表逐个写入日数据
         for i in range(0,self.data.shape[0]):
             ts_code = self.data.iloc[i]['ts_code']
             df = pro.daily(ts_code=ts_code)
@@ -35,6 +37,8 @@ class get_data_from_tushare():
             time.sleep(1) # 对方接口要求控制频次，每分钟不能超过500次，文件有大有小，是有概率超的，所以统一sleep下
             del (ts_code)
     def write_detail_data_minutes(self,pagesize):
+        #从sina按照标的物列表逐个写入5分钟数据
+        #对方有爬虫限制，目前暂时看每次减缓10s实验中
         for i in range(0,self.data.shape[0]):
             ts_code = self.data.iloc[i]['ts_code']
             ts_code=ts_code.split('.')[1]+ts_code.split('.')[0]
@@ -46,10 +50,42 @@ class get_data_from_tushare():
             df.to_csv('data_csv\\minutes\\' + ts_code + 'minute.csv')
             del(df)
 
+class read_data():
+
+
+
+    def get_daily_data(self,code,start_date='',end_date=''):
+        # 读标的物列表
+        path='data_csv'
+        # param  code  必填，标的物编码  e.g. 000001.SZ
+        # param  code  不必填，开始时间，没填写的时候，直到取最早，开始结束都没填写的时候取全部
+        # param  code  不必填，结束时间，没填写的时候，直到取最晚，开始结束都没填写的时候取全部
+        code=str(code.upper())
+        df=pd.read_csv(path+"\\"+code+".csv", sep=",")
+        df = df.loc[df["trade_date"] >= start_date] if start_date != '' else df
+        df = df.loc[df["trade_date"] <= end_date] if end_date != '' else df
+        df=df.sort_values(["trade_date"],ascending=True)
+        return df
+    def get_stock_list(self):
+        path = 'data_csv'
+        df = pd.read_csv(path + "\\stocklist.csv", sep=",")
+        return df
 if __name__ == '__main__':
 
     obj_=get_data_from_tushare()
     obj_.get_stock_list()
     obj_.write_detail_data_minutes(1000000)#写入sina的分钟级数据
-    #obj_.write_detail_data()#写入tushare的日数据
+    obj_.write_detail_data()#写入tushare的日数据
     #https://data.gtimg.cn/flashdata/hushen/minutes/21/sh601688.js 腾讯的日线级接口
+
+
+    # obj_read=read_data()
+    # test=obj_read.get_stock_list()
+    # #return dataframe  ts_code  symbol      name area industry  list_date
+    # test=obj_read.get_daily_data('000001.SZ',start_date=20210301,end_date=20210302)
+    #
+    # # param  code  必填，标的物编码  e.g. 000001.SZ
+    # # param  code  不必填，开始时间，没填写的时候，直到取最早，开始结束都没填写的时候取全部,格式为8位数字
+    # # param  code  不必填，结束时间，没填写的时候，直到取最晚，开始结束都没填写的时候取全部,格式为8位数字
+    # # return dataframe 默认按照trade_date 从早到晚排序，最后一天在最下面
+    # # ts_code trade_date open  high  low  close  pre_close change  pct_chg  vol  amount
