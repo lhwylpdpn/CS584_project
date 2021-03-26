@@ -44,7 +44,9 @@ class get_data_from_tushare():
             ts_code=ts_code.split('.')[1]+ts_code.split('.')[0]
             request_url='http://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol='+ts_code+'&scale=5&ma=no&datalen='+str(pagesize)
             response = requests.get(request_url)
+            print(response.content)
             res = json.loads(response.content)
+
             time.sleep(10)
             df = pd.DataFrame(res)
             df.to_csv('data_csv\\minutes\\' + ts_code + 'minute.csv')
